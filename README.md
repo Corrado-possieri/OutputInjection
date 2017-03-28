@@ -25,7 +25,7 @@ Once that you have downloaded the file OutputInjectionPackage.m2,
 the package can be loaded through the command 
 load "LOCAL-PATH-TO-OutputInjectionPackage.m2";
 
-In order to compute an immersion for the system
+In order to compute an immersion of the system
 
 \dot{x}_1 = x_1-x_1^2+x_2,
 
@@ -33,7 +33,7 @@ In order to compute an immersion for the system
 
 y = x_1,
 
-a minimal working example is
+into LIS form, a minimal working example is
 
 R = QQ[x_1,x_2];
 
