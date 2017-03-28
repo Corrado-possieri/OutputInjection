@@ -25,3 +25,13 @@ Once that you have downloaded the file OutputInjectionPackage.m2,
 the package can be loaded through the command 
 load "LOCAL-PATH-TO-OutputInjectionPackage.m2";
 
+In order to compute an immersion for the system
+\dot{x}_1 = x_1-x_1^2+x_2,
+\dot{x}_2 = x_1-x_1x_2,
+y = x_1,
+a minimal working example is
+
+R = QQ[x_1,x_2];
+f = matrix{{x_1-x_1^2+x_2},{x_1-x_1*x_2}};
+h = x_1;
+immObsNI(R,f,h,2,2)
