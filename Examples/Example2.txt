@@ -1,0 +1,4 @@
+restart;
+— add here the path to the package directory
+load "~/Documents/Universita/Dottorato/Articoli/InProgress/OutputInjec/Math/Good/OutputInjectionPackage.m2";
+obsForm(2)

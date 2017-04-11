@@ -1,0 +1,7 @@
+restart;
+— add here the path to the package directory
+load "~/Documents/Universita/Dottorato/Articoli/InProgress/OutputInjec/Math/Good/OutputInjectionPackage.m2";
+R = QQ[x_1..x_2];
+f = matrix{{-x_1+x_1*x_2},{1-x_1^2}};
+h = x_1;
+immObs(R,f,h,2,2)

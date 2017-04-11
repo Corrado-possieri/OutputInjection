@@ -1,0 +1,11 @@
+restart;
+— add here the path to the package directory
+load "~/Documents/Universita/Dottorato/Articoli/InProgress/OutputInjec/Math/Good/OutputInjectionPackage.m2";
+R = QQ[x_1..x_4,y_0..y_2];
+f = matrix{{x_2*x_3},{1/2*x_3*x_2^2+x_4*x_2+1},{-x_2*x_3^2},{x_2}};
+h = x_4;
+Lf0 = h;
+Lf1 = diff(x_1,Lf0)*f_(0,0) + diff(x_2,Lf0)*f_(1,0) + diff(x_3,Lf0)*f_(2,0) + diff(x_4,Lf0)*f_(3,0) ;
+Lf2 = diff(x_1,Lf1)*f_(0,0) + diff(x_2,Lf1)*f_(1,0) + diff(x_3,Lf1)*f_(2,0) + diff(x_4,Lf1)*f_(3,0) ;
+I = ideal(y_0-Lf0, y_1-Lf1, y_2-Lf2, x_3*x_4-1);
+G = transpose gens gb eliminate(I, new List from x_1..x_4)
