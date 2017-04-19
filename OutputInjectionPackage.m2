@@ -167,26 +167,36 @@ obsForm = (ell) -> (
  -- output: the embedding of the system.
  
  -- define the ring of the variables involved in the computations
- nell := 10*ell + ell;
- S := QQ[z_1..z_ell, k_10..k_(nell+1), t_0..t_ell, y_0..y_ell];
+ zvars := new List from z_1..z_ell;
+ lz := length zvars - 1;
+ kvars := new List from k_(1,0)..k_(ell,ell-1);
+ lk := lz + length kvars;
+ tvars := new List from t_0..t_ell;
+ lt := lk + length tvars;
+ yvars := new List from y_0..y_ell;
+ ly := lt + length yvars;
+ 
+ AVars := zvars | kvars | tvars | yvars;
+ 
+ S := QQ[AVars];
  nVars := vars S;
  -- print nVars;
  
- zvars := new List from (nVars_(0,0))..(nVars_(0,ell-1));
+ zvars = new List from (nVars_(0,0))..(nVars_(0,lz));
  -- print zvars;
- kvars := new List from (nVars_(0,ell))..(nVars_(0,ell+nell-9));
+ kvars = new List from (nVars_(0,lz+1))..(nVars_(0,lk));
  -- print kvars;
- tvars := new List from (nVars_(0,ell+nell-8))..(nVars_(0,2*ell+nell-8));
+ tvars = new List from (nVars_(0,lk+1))..(nVars_(0,lt));
  -- print tvars;
- yvars := new List from (nVars_(0,2*ell+nell-7))..(nVars_(0,3*ell+nell-7));
+ yvars = new List from (nVars_(0,lt+1))..(nVars_(0,ly));
  -- print yvars;
  
  -- build the vector field and the output map
  ff := new MutableMatrix from 0*random(S^ell,S^1);
  for ii from 0 to ell - 2 do (
-  ff_(ii,0) = zvars_(ii+1) + kvars_((ii)*10);
+  ff_(ii,0) = zvars_(ii+1) + kvars_((ii)*ell);
  );
- ff_(ell-1,0) = kvars_((ell-1)*10);
+ ff_(ell-1,0) = kvars_((ell-1)*ell);
  
  ff = new Matrix from ff;
  
@@ -206,10 +216,8 @@ obsForm = (ell) -> (
   for jj from 0 to length(zlist) - 1 do (
    nphh = nphh + diff(zlist#jj,phh)*ff_(jj,0);
   );
-  for jj from 0 to ell-1 do (
-   for vv from 0 to ell do (
-    nphh = nphh + diff(kvars_(10*jj+vv),phh)*kvars_(10*jj+vv+1)*(ff_(0,0));
-   );
+  for jj from 0 to length kvars - 2 do (
+   nphh = nphh + diff(kvars_(jj),phh)*kvars_(jj+1)*(ff_(0,0));
   );
   for jj from 0 to ell - 1 do (
    nphh = nphh + diff(tvars_jj,phh)*tvars_(jj+1)*(ff_(0,0));
@@ -235,26 +243,36 @@ obsFormNI = (ell) -> (
  -- output: the embedding of the system.
  
  -- define the ring of the variables involved in the computations
- nell := 10*ell + ell;
- S := QQ[z_1..z_ell, k_10..k_(nell+1), t_0..t_ell, y_0..y_ell];
+ zvars := new List from z_1..z_ell;
+ lz := length zvars - 1;
+ kvars := new List from k_(1,0)..k_(ell,ell-1);
+ lk := lz + length kvars;
+ tvars := new List from t_0..t_ell;
+ lt := lk + length tvars;
+ yvars := new List from y_0..y_ell;
+ ly := lt + length yvars;
+ 
+ AVars := zvars | kvars | tvars | yvars;
+ 
+ S := QQ[AVars];
  nVars := vars S;
  -- print nVars;
  
- zvars := new List from (nVars_(0,0))..(nVars_(0,ell-1));
+ zvars = new List from (nVars_(0,0))..(nVars_(0,lz));
  -- print zvars;
- kvars := new List from (nVars_(0,ell))..(nVars_(0,ell+nell-9));
+ kvars = new List from (nVars_(0,lz+1))..(nVars_(0,lk));
  -- print kvars;
- tvars := new List from (nVars_(0,ell+nell-8))..(nVars_(0,2*ell+nell-8));
+ tvars = new List from (nVars_(0,lk+1))..(nVars_(0,lt));
  -- print tvars;
- yvars := new List from (nVars_(0,2*ell+nell-7))..(nVars_(0,3*ell+nell-7));
+ yvars = new List from (nVars_(0,lt+1))..(nVars_(0,ly));
  -- print yvars;
  
  -- build the vector field and the output map
  ff := new MutableMatrix from 0*random(S^ell,S^1);
  for ii from 0 to ell - 2 do (
-  ff_(ii,0) = zvars_(ii+1) + kvars_((ii)*10);
+  ff_(ii,0) = zvars_(ii+1) + kvars_((ii)*ell);
  );
- ff_(ell-1,0) = kvars_((ell-1)*10);
+ ff_(ell-1,0) = kvars_((ell-1)*ell);
  
  ff = new Matrix from ff;
  
@@ -274,10 +292,8 @@ obsFormNI = (ell) -> (
   for jj from 0 to length(zlist) - 1 do (
    nphh = nphh + diff(zlist#jj,phh)*ff_(jj,0);
   );
-  for jj from 0 to ell-1 do (
-   for vv from 0 to ell do (
-    nphh = nphh + diff(kvars_(10*jj+vv),phh)*kvars_(10*jj+vv+1)*(ff_(0,0));
-   );
+  for jj from 0 to length kvars - 2 do (
+   nphh = nphh + diff(kvars_(jj),phh)*kvars_(jj+1)*(ff_(0,0));
   );
   for jj from 0 to ell - 1 do (
    nphh = nphh + diff(tvars_jj,phh)*tvars_(jj+1)*(ff_(0,0));
@@ -319,27 +335,42 @@ immObs = (R,f,h,N,ell) -> (
  coeffR := coefficientRing R;
  xx := gens R;
  n := length(xx);
- nell := 10*ell + ell;
  mm := numRows ss#0;
- S := coeffR[z_1..z_ell, xx_(0)..xx_(n-1), y_0, a_0..a_(mm-1),  
-   k_10..k_(nell+1), t_0..t_ell, y_1..y_ell, MonomialOrder => Lex];
- nVars := vars S;
  
+ zvars := new List from z_1..z_ell;
+ lz := length zvars - 1;
+ xvars := new List from xx_(0)..xx_(n-1);
+ lx := lz + length xvars;
+ y0vars := new List from y_0..y_0;
+ ly0 := lx + length y0vars;
+ avars := new List from a_0..a_(mm-1);
+ la := ly0 + length avars;
+ kvars := new List from k_(1,0)..k_(ell,ell-1);
+ lk := la + length kvars;
+ tvars := new List from t_0..t_ell;
+ lt := lk + length tvars;
+ yvars := new List from y_1..y_ell;
+ ly := lt + length yvars;
+ 
+ AVars := zvars | xvars | y0vars | avars | kvars | tvars | yvars;
+ 
+ S := QQ[AVars, MonomialOrder => Lex];
+ nVars := vars S;
  -- print nVars;
  
- zvars := new List from (nVars_(0,0))..(nVars_(0,ell-1));
+ zvars = new List from (nVars_(0,0))..(nVars_(0,lz));
  -- print zvars;
- xvars := new List from (nVars_(0,ell))..(nVars_(0,ell+n-1));
+ xvars = new List from (nVars_(0,lz+1))..(nVars_(0,lx));
  -- print xvars;
- y0v := nVars_(0,ell+n);
+ y0v := nVars_(0,lx+1);
  -- print y0v;
- avars := new List from (nVars_(0,ell+n+1))..(nVars_(0,ell+n+mm));
+ avars = new List from (nVars_(0,ly0+1))..(nVars_(0,la));
  -- print avars;
- kvars := new List from (nVars_(0,ell+n+mm+1))..(nVars_(0,ell+n+mm+nell-8));
+ kvars = new List from (nVars_(0,la+1))..(nVars_(0,lk));
  -- print kvars;
- tvars := new List from (nVars_(0,ell+n+mm+nell-7))..(nVars_(0,2*ell+n+mm+nell-7));
+ tvars = new List from (nVars_(0,lk+1))..(nVars_(0,lt));
  -- print tvars;
- yvars := new List from (nVars_(0,2*ell+n+mm+nell-6))..(nVars_(0,3*ell+n+mm+nell-7));
+ yvars = new List from (nVars_(0,lt+1))..(nVars_(0,ly));
  -- print yvars;
  
  -- construct the generic embedding of the nonlinear system
@@ -394,27 +425,42 @@ immObstr = (R,f,h,N,ell,d) -> (
  coeffR := coefficientRing R;
  xx := gens R;
  n := length(xx);
- nell := 10*ell + ell;
  mm := numRows ss#0;
- S := coeffR[z_1..z_ell, xx_(0)..xx_(n-1), y_0, a_0..a_(mm-1),
-    k_10..k_(nell+1), t_0..t_ell, y_1..y_ell, MonomialOrder => Lex];
- nVars := vars S;
  
+ zvars := new List from z_1..z_ell;
+ lz := length zvars - 1;
+ xvars := new List from xx_(0)..xx_(n-1);
+ lx := lz + length xvars;
+ y0vars := new List from y_0..y_0;
+ ly0 := lx + length y0vars;
+ avars := new List from a_0..a_(mm-1);
+ la := ly0 + length avars;
+ kvars := new List from k_(1,0)..k_(ell,ell-1);
+ lk := la + length kvars;
+ tvars := new List from t_0..t_ell;
+ lt := lk + length tvars;
+ yvars := new List from y_1..y_ell;
+ ly := lt + length yvars;
+ 
+ AVars := zvars | xvars | y0vars | avars | kvars | tvars | yvars;
+ 
+ S := QQ[AVars, MonomialOrder => Lex];
+ nVars := vars S;
  -- print nVars;
  
- zvars := new List from (nVars_(0,0))..(nVars_(0,ell-1));
+ zvars = new List from (nVars_(0,0))..(nVars_(0,lz));
  -- print zvars;
- xvars := new List from (nVars_(0,ell))..(nVars_(0,ell+n-1));
+ xvars = new List from (nVars_(0,lz+1))..(nVars_(0,lx));
  -- print xvars;
- y0v := nVars_(0,ell+n);
+ y0v := nVars_(0,lx+1);
  -- print y0v;
- avars := new List from (nVars_(0,ell+n+1))..(nVars_(0,ell+n+mm));
+ avars = new List from (nVars_(0,ly0+1))..(nVars_(0,la));
  -- print avars;
- kvars := new List from (nVars_(0,ell+n+mm+1))..(nVars_(0,ell+n+mm+nell-8));
+ kvars = new List from (nVars_(0,la+1))..(nVars_(0,lk));
  -- print kvars;
- tvars := new List from (nVars_(0,ell+n+mm+nell-7))..(nVars_(0,2*ell+n+mm+nell-7));
+ tvars = new List from (nVars_(0,lk+1))..(nVars_(0,lt));
  -- print tvars;
- yvars := new List from (nVars_(0,2*ell+n+mm+nell-6))..(nVars_(0,3*ell+n+mm+nell-7));
+ yvars = new List from (nVars_(0,lt+1))..(nVars_(0,ly));
  -- print yvars;
  
  -- construct the generic embedding of the nonlinear system
@@ -470,25 +516,36 @@ immObsNI = (R,f,h,N,ell) -> (
  coeffR := coefficientRing R;
  xx := gens R;
  n := length(xx);
- nell := 10*ell + ell;
  mm := numRows ss#0;
- S := coeffR[z_1..z_ell, xx_(0)..xx_(n-1), a_0..a_(mm-1), 
-   k_10..k_(nell+1), y_0..y_ell, MonomialOrder => Lex];
- nVars := vars S;
  
+ zvars := new List from z_1..z_ell;
+ lz := length zvars - 1;
+ xvars := new List from xx_(0)..xx_(n-1);
+ lx := lz + length xvars;
+ avars := new List from a_0..a_(mm-1);
+ la := lx + length avars;
+ kvars := new List from k_(1,0)..k_(ell,ell-1);
+ lk := la + length kvars;
+ yvars := new List from y_0..y_ell;
+ ly := lk + length yvars;
+ 
+ AVars := zvars | xvars | avars | kvars |  yvars;
+ 
+ S := QQ[AVars, MonomialOrder => Lex];
+ nVars := vars S;
  -- print nVars;
  
- zvars := new List from (nVars_(0,0))..(nVars_(0,ell-1));
+ zvars = new List from (nVars_(0,0))..(nVars_(0,lz));
  -- print zvars;
- xvars := new List from (nVars_(0,ell))..(nVars_(0,ell+n-1));
+ xvars = new List from (nVars_(0,lz+1))..(nVars_(0,lx));
  -- print xvars;
- avars := new List from (nVars_(0,ell+n))..(nVars_(0,ell+n+mm-1));
+ avars = new List from (nVars_(0,lx+1))..(nVars_(0,la));
  -- print avars;
- kvars := new List from (nVars_(0,ell+n+mm))..(nVars_(0,ell+n+mm+nell-9));
+ kvars = new List from (nVars_(0,la+1))..(nVars_(0,lk));
  -- print kvars;
- y0v := nVars_(0,ell+n+mm+nell-8);
+ y0v := nVars_(0,lk+1);
  -- print y0v;
- yvars := new List from (nVars_(0,ell+n+mm+nell-7))..(nVars_(0,2*ell+n+mm+nell-8));
+ yvars = new List from (nVars_(0,lk+2))..(nVars_(0,ly));
  -- print yvars;
  
  -- construct the generic embedding of the nonlinear system
@@ -567,15 +624,15 @@ immObsNI = (R,f,h,N,ell) -> (
  kappaOut := new MutableList from 0..(n-1);
  indx := n-1;
  for ii from 0 to lg - 1 do (
-  -- print kvars_(indx*10);
+  -- print kvars_(indx*ell);
   lt := leadTerm(G_(ii,0));
-  if leadMonomial(lt) == kvars_(indx*10) then (
+  if leadMonomial(lt) == kvars_(indx*ell) then (
    lc := leadCoefficient(G_(ii,0));
    kappa#(indx) = (lt - G_(ii,0))/lc;
-   kappaOut#(indx) = kvars_(indx*10)-(lt - G_(ii,0))/lc;
+   kappaOut#(indx) = kvars_(indx*ell)-(lt - G_(ii,0))/lc;
    indx = indx - 1;
   );
-  if leadMonomial(lt) == kvars_(indx*10+1) then (
+  if leadMonomial(lt) == kvars_(indx*ell+1) then (
    llc := leadCoefficient(G_(ii,0));
    tePol :=  y0v*(lt - G_(ii,0))/llc;
    mexp := 0;
@@ -588,7 +645,7 @@ immObsNI = (R,f,h,N,ell) -> (
     parPol = parPol+coePol*1/kk*y0v^kk;
    );
    kappa#(indx) = parPol;
-   kappaOut#(indx) = kvars_(indx*10)-parPol;
+   kappaOut#(indx) = kvars_(indx*ell)-parPol;
    indx = indx - 1;
   );
   if indx == -1 then break;
@@ -602,8 +659,8 @@ immObsNI = (R,f,h,N,ell) -> (
  cont := 0;
  for ii from 0 to ell - 1 do (
   parpol := kappa_(ii,0);
-  for jj from 0 to ell do (
-   kappasubs#cont = kvars_(ii*10 + jj) - parpol;
+  for jj from 0 to ell-1 do (
+   kappasubs#cont = kvars_(ii*ell + jj) - parpol;
    parpol = diff(y0v,substitute(parpol,S));
    cont = cont + 1;
   );
@@ -636,8 +693,9 @@ immObsNI = (R,f,h,N,ell) -> (
  ngbCH = transpose matrix{ngbCH};
  
  -- change of coordinate from z to x
- S2 := coeffR[xx_(0)..xx_(n-1), z_1..z_ell, a_0..a_(mm-1), 
-   k_10..k_(nell+1), y_0..y_ell, MonomialOrder => Lex];
+ nnVars := xvars | zvars | avars | kvars | {y0v} | yvars;
+ 
+ S2 := coeffR[nnVars, MonomialOrder => Lex];
  gbCh2 := transpose gens gb substitute(ideal(gbCh),S2);
  ngbCh2 := new MutableList;
  for ii from 0 to numRows gbCh2 - 1 do (
@@ -678,25 +736,36 @@ immObstrNI = (R,f,h,N,ell,d) -> (
  coeffR := coefficientRing R;
  xx := gens R;
  n := length(xx);
- nell := 10*ell + ell;
  mm := numRows ss#0;
- S := coeffR[z_1..z_ell, xx_(0)..xx_(n-1), a_0..a_(mm-1), 
-   k_10..k_(nell+1), y_0..y_ell, MonomialOrder => Lex];
- nVars := vars S;
  
+ zvars := new List from z_1..z_ell;
+ lz := length zvars - 1;
+ xvars := new List from xx_(0)..xx_(n-1);
+ lx := lz + length xvars;
+ avars := new List from a_0..a_(mm-1);
+ la := lx + length avars;
+ kvars := new List from k_(1,0)..k_(ell,ell-1);
+ lk := la + length kvars;
+ yvars := new List from y_0..y_ell;
+ ly := lk + length yvars;
+ 
+ AVars := zvars | xvars | avars | kvars |  yvars;
+ 
+ S := QQ[AVars, MonomialOrder => Lex];
+ nVars := vars S;
  -- print nVars;
  
- zvars := new List from (nVars_(0,0))..(nVars_(0,ell-1));
+ zvars = new List from (nVars_(0,0))..(nVars_(0,lz));
  -- print zvars;
- xvars := new List from (nVars_(0,ell))..(nVars_(0,ell+n-1));
+ xvars = new List from (nVars_(0,lz+1))..(nVars_(0,lx));
  -- print xvars;
- avars := new List from (nVars_(0,ell+n))..(nVars_(0,ell+n+mm-1));
+ avars = new List from (nVars_(0,lx+1))..(nVars_(0,la));
  -- print avars;
- kvars := new List from (nVars_(0,ell+n+mm))..(nVars_(0,ell+n+mm+nell-9));
+ kvars = new List from (nVars_(0,la+1))..(nVars_(0,lk));
  -- print kvars;
- y0v := nVars_(0,ell+n+mm+nell-8);
+ y0v := nVars_(0,lk+1);
  -- print y0v;
- yvars := new List from (nVars_(0,ell+n+mm+nell-7))..(nVars_(0,2*ell+n+mm+nell-8));
+ yvars = new List from (nVars_(0,lk+2))..(nVars_(0,ly));
  -- print yvars;
  
  -- construct the generic embedding of the nonlinear system
@@ -772,15 +841,15 @@ immObstrNI = (R,f,h,N,ell,d) -> (
  kappaOut := new MutableList from 0..(n-1);
  indx := n-1;
  for ii from 0 to lg - 1 do (
-  -- print kvars_(indx*10);
+  -- print kvars_(indx*ell);
   lt := leadTerm(G_(ii,0));
-  if leadMonomial(lt) == kvars_(indx*10) then (
+  if leadMonomial(lt) == kvars_(indx*ell) then (
    lc := leadCoefficient(G_(ii,0));
    kappa#(indx) = (lt - G_(ii,0))/lc;
-   kappaOut#(indx) = kvars_(indx*10)-(lt - G_(ii,0))/lc;
+   kappaOut#(indx) = kvars_(indx*ell)-(lt - G_(ii,0))/lc;
    indx = indx - 1;
   );
-  if leadMonomial(lt) == kvars_(indx*10+1) then (
+  if leadMonomial(lt) == kvars_(indx*ell+1) then (
    llc := leadCoefficient(G_(ii,0));
    tePol :=  y0v*(lt - G_(ii,0))/llc;
    mexp := 0;
@@ -793,7 +862,7 @@ immObstrNI = (R,f,h,N,ell,d) -> (
     parPol = parPol+coePol*1/kk*y0v^kk;
    );
    kappa#(indx) = parPol;
-   kappaOut#(indx) = kvars_(indx*10)-parPol;
+   kappaOut#(indx) = kvars_(indx*ell)-parPol;
    indx = indx - 1;
   );
   if indx == -1 then break;
@@ -807,8 +876,8 @@ immObstrNI = (R,f,h,N,ell,d) -> (
  cont := 0;
  for ii from 0 to ell - 1 do (
   parpol := kappa_(ii,0);
-  for jj from 0 to ell do (
-   kappasubs#cont = kvars_(ii*10 + jj) - parpol;
+  for jj from 0 to ell-1 do (
+   kappasubs#cont = kvars_(ii*ell + jj) - parpol;
    parpol = diff(y0v,substitute(parpol,S));
    cont = cont + 1;
   );
@@ -841,8 +910,9 @@ immObstrNI = (R,f,h,N,ell,d) -> (
  ngbCH = transpose matrix{ngbCH};
  
  -- change of coordinate from z to x
- S2 := coeffR[xx_(0)..xx_(n-1), z_1..z_ell, a_0..a_(mm-1), 
-   k_10..k_(nell+1), y_0..y_ell, MonomialOrder => Lex];
+ nnVars := xvars | zvars | avars | kvars | {y0v} | yvars;
+ 
+ S2 := coeffR[nnVars, MonomialOrder => Lex];
  gbCh2 := transpose gens gb substitute(ideal(gbCh),S2);
  ngbCh2 := new MutableList;
  for ii from 0 to numRows gbCh2 - 1 do (
@@ -1108,27 +1178,40 @@ immObstrNum = (R,f,h,N,ell,d,deg) -> (
  coeffR := coefficientRing R;
  xx := gens R;
  n := length(xx);
- nell := 10*ell + ell;
  mm := numRows ss#0;
- S := coeffR[z_1..z_ell, xx_(0)..xx_(n-1), a_0..a_(mm-1), 
-   k_10..k_(nell+1), y_0..y_ell, t_0..t_ell, MonomialOrder => Lex];
- nVars := vars S;
  
+ zvars := new List from z_1..z_ell;
+ lz := length zvars - 1;
+ xvars := new List from xx_(0)..xx_(n-1);
+ lx := lz + length xvars;
+ avars := new List from a_0..a_(mm-1);
+ la := lx + length avars;
+ kvars := new List from k_(1,0)..k_(ell,ell-1);
+ lk := la + length kvars;
+ yvars := new List from y_0..y_ell;
+ ly := lk + length yvars;
+ tvars := new List from t_0..t_ell;
+ lt := ly + length tvars;
+ 
+ AVars := zvars | xvars | avars | kvars | yvars | tvars;
+ 
+ S := QQ[AVars, MonomialOrder => Lex];
+ nVars := vars S;
  -- print nVars;
  
- zvars := new List from (nVars_(0,0))..(nVars_(0,ell-1));
+ zvars = new List from (nVars_(0,0))..(nVars_(0,lz));
  -- print zvars;
- xvars := new List from (nVars_(0,ell))..(nVars_(0,ell+n-1));
+ xvars = new List from (nVars_(0,lz+1))..(nVars_(0,lx));
  -- print xvars;
- avars := new List from (nVars_(0,ell+n))..(nVars_(0,ell+n+mm-1));
+ avars = new List from (nVars_(0,lx+1))..(nVars_(0,la));
  -- print avars;
- kvars := new List from (nVars_(0,ell+n+mm))..(nVars_(0,ell+n+mm+nell-9));
+ kvars = new List from (nVars_(0,la+1))..(nVars_(0,lk));
  -- print kvars;
- y0v := nVars_(0,ell+n+mm+nell-8);
+ y0v := nVars_(0,lk+1);
  -- print y0v;
- yvars := new List from (nVars_(0,ell+n+mm+nell-7))..(nVars_(0,2*ell+n+mm+nell-8));
+ yvars = new List from (nVars_(0,lk+2))..(nVars_(0,ly));
  -- print yvars;
- tvars := new List from (nVars_(0,2*ell+n+mm+nell-7))..(nVars_(0,3*ell+n+mm+nell-7));
+ tvars = new List from (nVars_(0,ly+1))..(nVars_(0,lt));
  -- print tvars;
  
  -- compute the solution through truncation
@@ -1289,15 +1372,15 @@ immObstrNum = (R,f,h,N,ell,d,deg) -> (
  kappaOut := new MutableList from 0..(n-1);
  indx := n-1;
  for ii from 0 to lg - 1 do (
-  -- print kvars_(indx*10);
+  -- print kvars_(indx*ell);
   lt := leadTerm(G_(ii,0));
-  if leadMonomial(lt) == kvars_(indx*10) then (
+  if leadMonomial(lt) == kvars_(indx*ell) then (
    lc := leadCoefficient(G_(ii,0));
    kappa#(indx) = (lt - G_(ii,0))/lc;
-   kappaOut#(indx) = kvars_(indx*10)-(lt - G_(ii,0))/lc;
+   kappaOut#(indx) = kvars_(indx*ell)-(lt - G_(ii,0))/lc;
    indx = indx - 1;
   );
-  if leadMonomial(lt) == kvars_(indx*10+1) then (
+  if leadMonomial(lt) == kvars_(indx*ell+1) then (
    llc := leadCoefficient(G_(ii,0));
    tePol :=  y0v*(lt - G_(ii,0))/llc;
    mexp := 0;
@@ -1310,7 +1393,7 @@ immObstrNum = (R,f,h,N,ell,d,deg) -> (
     parPol = parPol+coePol*1/kk*y0v^kk;
    );
    kappa#(indx) = parPol;
-   kappaOut#(indx) = kvars_(indx*10)-parPol;
+   kappaOut#(indx) = kvars_(indx*ell)-parPol;
    indx = indx - 1;
   );
   if indx == -1 then break;
@@ -1325,9 +1408,9 @@ immObstrNum = (R,f,h,N,ell,d,deg) -> (
  cont := 0;
  for ii from 0 to ell - 1 do (
   parpol := kappa_(ii,0);
-  for jj from 0 to ell do (
-   kappasubs#cont = kvars_(ii*10 + jj) - parpol;
-   kappasubs2#cont = kvars_(ii*10 + jj) - substitute(parpol, y0v => z1v);
+  for jj from 0 to ell - 1 do (
+   kappasubs#cont = kvars_(ii*ell + jj) - parpol;
+   kappasubs2#cont = kvars_(ii*ell + jj) - substitute(parpol, y0v => z1v);
    parpol = diff(y0v,substitute(parpol,S));
    cont = cont + 1;
   );
@@ -1372,8 +1455,9 @@ immObstrNum = (R,f,h,N,ell,d,deg) -> (
  ngbCH = transpose matrix{ngbCH};
  
  -- change of coordinate from z to x
- S4 := coeffR[xx_(0)..xx_(n-1), z_1..z_ell, a_0..a_(mm-1), 
-   k_10..k_(nell+1), y_0..y_ell, MonomialOrder => Lex];
+ nnVars :=  xvars | zvars | avars | kvars | {y0v} | yvars;
+ 
+ S4 := coeffR[nnVars, MonomialOrder => Lex];
  gbCh2 := transpose gens gb substitute(ideal(gbCh),S4);
  ngbCh2 := new MutableList;
  for ii from 0 to numRows gbCh2 - 1 do (
@@ -1382,7 +1466,7 @@ immObstrNum = (R,f,h,N,ell,d,deg) -> (
  ngbCh2 = new List from ngbCh2;
  ngbCh2 = transpose matrix{ngbCh2};
  
- S5 := coeffR[k_10..k_(nell+1),z_1..z_ell,MonomialOrder => Lex];
+ S5 := coeffR[kvars | zvars,MonomialOrder => Lex];
  kappaOut = substitute(kappaOut,S5);
  
  -- return the change of coordinates for the output and the immersion
